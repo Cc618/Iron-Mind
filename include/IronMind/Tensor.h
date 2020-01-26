@@ -24,15 +24,46 @@ namespace im
         // A pointer to all values
         const value_t *Data() const;
 
+        // Reshapes the tensor
+        // The tensor must contain
+        // the same values after this call
+        void Reshape(const shape_t SHAPE);
+
         // String representation functions
         std::string ToString() const;
         void Print() const;
+
+        // Computes the weigthed sum
+        // Optimized version of vector dot weights
+        // * This tensor must have one dimension (a shape like { n })
+        // * The second tensor must have two dimensions (a shape like { n, m })
+        // * The result will have a shape like { m }
+        Tensor WeightedSum(const Tensor &WEIGHTS) const;
 
     public:
         // Access to an item
         value_t operator[](const shape_t& INDICES) const;
         value_t &operator[](const shape_t& INDICES);
         Tensor &operator=(const Tensor& OTHER);
+
+        // Element wise operations
+        Tensor &operator+=(const Tensor& OTHER);
+        Tensor &operator-=(const Tensor& OTHER);
+        Tensor &operator*=(const Tensor& OTHER);
+        Tensor &operator/=(const Tensor& OTHER);
+        Tensor operator+(const Tensor& OTHER) const;
+        Tensor operator-(const Tensor& OTHER) const;
+        Tensor operator*(const Tensor& OTHER) const;
+        Tensor operator/(const Tensor& OTHER) const;
+
+        Tensor &operator*=(const value_t v);
+        Tensor operator*(const value_t v) const;
+
+    private:
+        // Unsafe constructor
+        // !!! DATA is not duplicated
+        // !!! DATA, SHAPE, SIZE are not verified
+        Tensor(value_t *data, const shape_t& SHAPE, const size_t SIZE);
 
     private:
         // Inits the shape and size

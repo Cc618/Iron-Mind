@@ -15,12 +15,11 @@ int main()
         5, 6,
     }, {3, 2});
 
-    Tensor b = a;
-    
-    a[{1, 1}] = -1;
+    auto b = Tensor({
+        16, 8, 4,
+    }, {3});
 
-    a.Print();
-    b.Print();
+    b.WeightedSum(a).Print();
 
     return 0;
 }

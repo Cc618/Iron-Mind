@@ -35,7 +35,7 @@ namespace im
     {
         delete[] data;
     }
- 
+
     size_t Tensor::Size() const
     {
         return size;
@@ -49,6 +49,23 @@ namespace im
     const value_t *Tensor::Data() const
     {
         return data;
+    }
+
+    void Tensor::Reshape(const shape_t SHAPE)
+    {
+        // Make the product
+        size_t newSize = 1;
+        for (const auto &val : SHAPE)
+        {
+            Assert(val != 0, "(Tensor::Reshape) Items in SHAPE must be non-null");
+            newSize *= val;
+        }
+
+        Assert(newSize == size, "(Tensor::Reshape) Can't reshape, the number of values is not the same as before");
+
+        // Update attributes
+        shape = SHAPE;
+        size = newSize;
     }
 
     std::string Tensor::ToString() const
@@ -95,8 +112,32 @@ namespace im
         std::cout << ToString() << '\n';
     }
 
+    Tensor Tensor::WeightedSum(const Tensor &WEIGHTS) const
+    {
+        Assert(shape.size() == 1, "(Tensor::WeightedSum) The first tensor must have one dimension");
+        Assert(WEIGHTS.shape.size() == 2, "(Tensor::WeightedSum) The second tensor must have two dimensions");
+        Assert(WEIGHTS.shape[0] == shape[0], "(Tensor::WeightedSum) The second tensor must have a shape "
+            "like { n, m } and the first { n } but first.n != second.n");
+
+        const size_t RESULT_SIZE = WEIGHTS.shape[1];
+        Tensor result(new float[RESULT_SIZE], { RESULT_SIZE }, RESULT_SIZE);
+       
+        for (size_t i = 0; i < RESULT_SIZE; ++i)
+        {
+            // Init the sum to 0
+            result.data[i] = 0;
+            
+            // Compute the weighted sum
+            for (size_t j = 0; j < size; ++j)
+                result.data[i] += data[j] * WEIGHTS.data[j * RESULT_SIZE + i];
+        }
+
+        return result;
+    }
+
+
     value_t Tensor::operator[](const shape_t& INDICES) const
-    {     
+    {
         return data[posAt(INDICES)];
     }
 
@@ -104,7 +145,7 @@ namespace im
     {
         return data[posAt(INDICES)];
     }
-    
+
     Tensor &Tensor::operator=(const Tensor& OTHER)
     {
         // Free data
@@ -120,6 +161,117 @@ namespace im
 
         return *this;
     }
+
+    Tensor &Tensor::operator+=(const Tensor& OTHER)
+    {
+        Assert(shape == OTHER.shape, "(Tensor::+=) The shapes must be equal");
+
+        for (size_t i = 0; i < size; ++i)
+            data[i] += OTHER.data[i];
+
+        return *this;
+    }
+
+    Tensor &Tensor::operator-=(const Tensor& OTHER)
+    {
+        Assert(shape == OTHER.shape, "(Tensor::-=) The shapes must be equal");
+
+        for (size_t i = 0; i < size; ++i)
+            data[i] -= OTHER.data[i];
+
+        return *this;
+    }
+
+    Tensor &Tensor::operator*=(const Tensor& OTHER)
+    {
+        Assert(shape == OTHER.shape, "(Tensor::*=) The shapes must be equal");
+
+        for (size_t i = 0; i < size; ++i)
+            data[i] *= OTHER.data[i];
+
+        return *this;
+    }
+
+    Tensor &Tensor::operator/=(const Tensor& OTHER)
+    {
+        Assert(shape == OTHER.shape, "(Tensor::/=) The shapes must be equal");
+
+        for (size_t i = 0; i < size; ++i)
+            data[i] /= OTHER.data[i];
+
+        return *this;
+    }
+
+    Tensor Tensor::operator+(const Tensor& OTHER) const
+    {
+        Assert(shape == OTHER.shape, "(Tensor::+) The shapes must be equal");
+
+        Tensor result(new float[size], shape, size);
+
+        for (size_t i = 0; i < result.size; ++i)
+            result.data[i] = data[i] + OTHER.data[i];
+
+        return result;
+    }
+
+    Tensor Tensor::operator-(const Tensor& OTHER) const
+    {
+        Assert(shape == OTHER.shape, "(Tensor::-) The shapes must be equal");
+
+        Tensor result(new float[size], shape, size);
+
+        for (size_t i = 0; i < result.size; ++i)
+            result.data[i] = data[i] - OTHER.data[i];
+
+        return result;
+    }
+
+    Tensor Tensor::operator*(const Tensor& OTHER) const
+    {
+        Assert(shape == OTHER.shape, "(Tensor::*) The shapes must be equal");
+
+        Tensor result(new float[size], shape, size);
+
+        for (size_t i = 0; i < result.size; ++i)
+            result.data[i] = data[i] * OTHER.data[i];
+
+        return result;
+    }
+
+    Tensor Tensor::operator/(const Tensor& OTHER) const
+    {
+        Assert(shape == OTHER.shape, "(Tensor::/) The shapes must be equal");
+
+        Tensor result(new float[size], shape, size);
+
+        for (size_t i = 0; i < result.size; ++i)
+            result.data[i] = data[i] / OTHER.data[i];
+
+        return result;
+    }
+
+    Tensor &Tensor::operator*=(const value_t v)
+    {
+        for (size_t i = 0; i < size; ++i)
+            data[i] *= v;
+
+        return *this;
+    }
+
+    Tensor Tensor::operator*(const value_t v) const
+    {
+        Tensor result(new float[size], shape, size);
+
+        // auto Tensor 
+        for (size_t i = 0; i < result.size; ++i)
+            result.data[i] *= v;
+
+        return result;
+    }
+
+    Tensor::Tensor(value_t *data, const shape_t& SHAPE, const size_t SIZE)
+        : data(data), shape(SHAPE), size(SIZE)
+    {}
 
     void Tensor::initShape(const shape_t& SHAPE)
     {
