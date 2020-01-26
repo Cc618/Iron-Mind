@@ -5,12 +5,15 @@
 
 #include <vector>
 #include <string>
+#include "IronMind/Loss.h"
 #include "IronMind/types.h"
 
 namespace im
 {
     class Tensor
     {
+        friend value_t Loss::Compare(const Tensor&, const Tensor&) const;
+
     public:
         // Load using buffer or file
         static Tensor Load(const std::vector<uint8_t>& BUFFER);

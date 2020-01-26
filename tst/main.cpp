@@ -35,6 +35,7 @@ int main()
         SGD(0.001),
         MSE(),
         inputSize=2,
+        UniformInitializer()
     );
 
     model.Train(x, y, 100);
