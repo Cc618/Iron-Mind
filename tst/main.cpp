@@ -19,7 +19,11 @@ int main()
         16, 8, 4,
     }, {3});
 
-    b.WeightedSum(a).Print();
+    // b.WeightedSum(a).ExpandDims().Print();
+
+    b.Map([](float &v){
+        --v;
+    }).Print();
 
     return 0;
 }

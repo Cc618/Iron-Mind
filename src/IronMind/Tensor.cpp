@@ -1,6 +1,7 @@
 #include "IronMind/Tensor.h"
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 #include <string.h>
 #include "IronMind/errors.h"
 
@@ -134,7 +135,30 @@ namespace im
 
         return result;
     }
+    
+    Tensor &Tensor::Map(void (*f)(float &val))
+    {
+        for (size_t i = 0; i < size; ++i)
+            f(data[i]);
 
+        return *this;
+    }
+
+    Tensor &Tensor::ExpandDims(const size_t DIMS)
+    {
+        const size_t SIZE = shape.size();
+        shape.resize(SIZE + DIMS);
+
+        // Move values
+        for (size_t i = SIZE - 1; i < SIZE; --i)
+            shape[i + DIMS] = shape[i];
+
+        // Add 1
+        for (size_t i = 0; i < DIMS; ++i)
+            shape[i] = 1;
+
+        return *this;
+    }
 
     value_t Tensor::operator[](const shape_t& INDICES) const
     {

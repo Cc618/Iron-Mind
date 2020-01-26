@@ -40,6 +40,12 @@ namespace im
         // * The result will have a shape like { m }
         Tensor WeightedSum(const Tensor &WEIGHTS) const;
 
+        // Applies the function f on each values
+        Tensor &Map(void (*f)(float &val));
+
+        // Adds 1 to the shape DIMS times
+        Tensor &ExpandDims(const size_t DIMS=1);
+
     public:
         // Access to an item
         value_t operator[](const shape_t& INDICES) const;
