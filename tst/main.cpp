@@ -32,10 +32,10 @@ int main()
             new FullyConnected(2),
             new Activation::Sigmoid(),
         },
-        SGD(0.001),
-        MSE(),
+        Optimizer::SGD(0.001),
+        Loss::MSE(),
         inputSize=2,
-        UniformInitializer()
+        Initializer::Uniform()
     );
 
     model.Train(x, y, 100);

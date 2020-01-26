@@ -9,9 +9,13 @@
 namespace im
 {
     class Tensor;
-    
+
     class Loss
     {
+    public:
+        // Mean squared error = 1 / n * (a - b) ^ 2
+        static Loss *MSE();
+
     public:
         Loss(value_t (*loss)(const value_t label, const value_t output),
             value_t (*derivative)(const value_t label, const value_t output));
@@ -22,6 +26,7 @@ namespace im
 
     public:
         value_t (*loss)(const value_t label, const value_t output);
+        // Derivative wrt output
         value_t (*derivative)(const value_t label, const value_t output);
     };
 } // namespace im
