@@ -5,7 +5,7 @@ OBJS = $(patsubst src/IronMind/%.cpp,obj/IronMind/%.o,$(SRCS))
 DEPS = $(OBJS:.o=.d)
 FLAGS = -Iinclude -std=c++17
 
-.PHONY: dirs tst run clean
+.PHONY: tst run clean
 
 # Run tests
 run: tst
@@ -13,24 +13,22 @@ run: tst
 	@bin/tst
 
 # Tests
-tst: tst/main.cpp dirs $(DEPS) $(OBJS)
-	$(CPP) $(FLAGS) -o bin/tst $(OBJS) $<
+tst: tst/main.cpp $(DEPS) $(OBJS)
+	$(CPP) $(FLAGS) -o bin/tst $(OBJS) tst/main.cpp
 
 # Object files
-obj/%.o: src/%.cpp
+obj/%.o: src/%.cpp mk_dirs.sh
+	./mk_dirs.sh
 	$(CPP) $(FLAGS) -c -o $@ $<
 
 # Depedencies from cpp files
-obj/%.d: src/%.cpp
+obj/%.d: src/%.cpp mk_dirs.sh
+	./mk_dirs.sh
 	$(CPP) $(FLAGS) -MM -MT $(patsubst obj/%.d,obj/%.o,$@) $< > $@
-
-# Creates bin and obj directories
-dirs:
-	mkdir -p bin obj obj/IronMind
 
 # Removes obj and bin folders
 clean:
-	rm -rf bin/* obj/*
+	rm -rf bin obj
 	clear
 
 # Include depedencies (auto update headers)
