@@ -45,5 +45,4 @@ namespace im
     {
         return Tensor(x).Map(function);
     }
-
 } // namespace im

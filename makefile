@@ -13,7 +13,7 @@ run: tst
 	@bin/tst
 
 # Tests
-tst: tst/main.cpp $(DEPS) $(OBJS) dirs
+tst: tst/main.cpp dirs $(DEPS) $(OBJS)
 	$(CPP) $(FLAGS) -o bin/tst $(OBJS) $<
 
 # Object files

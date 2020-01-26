@@ -12,6 +12,11 @@ namespace im
     class Tensor
     {
     public:
+        // Load using buffer or file
+        static Tensor Load(const std::vector<uint8_t>& BUFFER);
+        static Tensor Load(const std::string& PATH);
+
+    public:
         Tensor();
         Tensor(const value_list_t& DATA, const shape_t& SHAPE);
         Tensor(const Tensor& OTHER);
@@ -32,6 +37,10 @@ namespace im
         // String representation functions
         std::string ToString() const;
         void Print() const;
+
+        // To save it
+        std::vector<uint8_t> ToBytes() const;
+        void Save(const std::string& PATH) const;
 
         // Computes the weigthed sum
         // Optimized version of vector dot weights

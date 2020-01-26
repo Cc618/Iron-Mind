@@ -15,15 +15,24 @@ int main()
         5, 6,
     }, {3, 2});
 
-    auto b = Tensor({
-        16, 8, 4,
-    }, {3});
+    // auto b = Tensor({
+    //     16, 8, 4,
+    // }, {3});
 
     // b.WeightedSum(a).ExpandDims().Print();
 
-    b.Map([](float &v){
-        --v;
-    }).Print();
+    // b.Map([](float &v){
+    //     --v;
+    // }).Print();
+
+    a.Save(".tst_tensor");
+    a.Print();
+
+    a = Tensor();
+    a.Print();
+
+    a = Tensor::Load(".tst_tensor");
+    a.Print();
 
     return 0;
 }

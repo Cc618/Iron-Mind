@@ -4,9 +4,41 @@
 #include <algorithm>
 #include <string.h>
 #include "IronMind/errors.h"
+#include "IronMind/io.h"
 
 namespace im
 {
+    Tensor Tensor::Load(const std::vector<uint8_t>& BUFFER)
+    {
+        Assert(BUFFER.size() >= 16, "(Tensor::Load) Invalid or empty buffer");
+
+        const uint64_t VERSION = *(uint64_t*)(&BUFFER[0]);
+        Assert(VERSION == 1, "(Tensor::Load) Invalid version");
+
+        const uint64_t DIMS = *(uint64_t*)(&BUFFER[8]);
+        Assert(BUFFER.size() >= 8 + 8 + 8 * DIMS, "(Tensor::Load) Invalid or corrupted buffer");
+
+        shape_t shape(DIMS);
+        size_t size = 1;
+        for (size_t i = 0; i < DIMS; ++i)
+        {
+            shape[i] = *(uint64_t*)(&BUFFER[8 + 8 + 8 * i]);
+            size *= shape[i];
+        }
+
+        Assert(BUFFER.size() >= 8 + 8 + 8 * DIMS + 4 * size, "(Tensor::Load) Invalid or corrupted buffer");
+        value_t *data = new value_t[size];
+        for (size_t i = 0; i < size; ++i)
+            data[i] = *(value_t*)(&BUFFER[8 + 8 + 8 * DIMS + 4 * i]);
+        
+        return Tensor(data, shape, size);
+    }
+
+    Tensor Tensor::Load(const std::string& PATH)
+    {
+        return Load(ReadFile(PATH));
+    }
+
     Tensor::Tensor()
         : data(nullptr)
     {
@@ -111,6 +143,39 @@ namespace im
     void Tensor::Print() const
     {
         std::cout << ToString() << '\n';
+    }
+
+    std::vector<uint8_t> Tensor::ToBytes() const
+    {
+        // Format :
+        // <VERSION:uint8>
+        // <DIMS:uint64>
+        // <DIM[0]:uint64> ... <DIM[DIMS - 1]:uint64>
+        // <VALUE[0]:float32> ... <VALUE[size - 1]:float32>
+
+        constexpr uint64_t VERSION = 1;
+
+        std::vector<uint8_t> bytes;
+        bytes.resize(8 + 8 + 8 * shape.size() + 4 * size);
+
+        // Version
+        *(uint64_t*)(&bytes[0]) = VERSION;
+
+        // Dims
+        *(uint64_t*)(&bytes[8]) = (uint64_t)shape.size();
+        for (size_t i = 0; i < shape.size(); ++i)
+            *(uint64_t*)(&bytes[8 + 8 + i * 8]) = (uint64_t)shape[i];
+
+        // Values
+        for (size_t i = 0; i < size; ++i)
+            *(float*)(&bytes[8 + 8 + shape.size() * 8 + i * 4]) = (float)data[i];
+
+        return bytes;
+    }
+
+    void Tensor::Save(const std::string& PATH) const
+    {
+        WriteFile(PATH, ToBytes());
     }
 
     Tensor Tensor::WeightedSum(const Tensor &WEIGHTS) const
