@@ -3,7 +3,7 @@ HEADERS = $(wildcard include/IronMind/*.h)
 SRCS = $(wildcard src/IronMind/*.cpp)
 OBJS = $(patsubst src/IronMind/%.cpp,obj/IronMind/%.o,$(SRCS))
 DEPS = $(OBJS:.o=.d)
-FLAGS = -Iinclude -std=c++17
+FLAGS = -Iinclude -std=c++14
 
 .PHONY: tst run clean
 

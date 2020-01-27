@@ -45,6 +45,17 @@ namespace im
         initShape({});
     }
 
+    Tensor::Tensor(const shape_t& SHAPE)
+    {
+        initShape(SHAPE);
+
+        // Allocate and copy the data from the list to the tensor
+        data = new float[size];
+        
+        for (size_t i = 0; i < size; ++i)
+            data[i] = 0;
+    }
+
     Tensor::Tensor(const value_list_t& DATA, const shape_t& SHAPE)
     {
         initShape(SHAPE);

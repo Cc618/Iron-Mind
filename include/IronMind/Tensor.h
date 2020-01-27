@@ -7,12 +7,14 @@
 #include <string>
 #include "IronMind/Loss.h"
 #include "IronMind/types.h"
+#include "IronMind/Initializer.h"
 
 namespace im
 {
     class Tensor
     {
         friend value_t Loss::Compare(const Tensor&, const Tensor&) const;
+        friend void Initializer::Init(Tensor&);
 
     public:
         // Load using buffer or file
@@ -21,6 +23,7 @@ namespace im
 
     public:
         Tensor();
+        Tensor(const shape_t& SHAPE);
         Tensor(const value_list_t& DATA, const shape_t& SHAPE);
         Tensor(const Tensor& OTHER);
         ~Tensor();

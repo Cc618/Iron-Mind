@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "IronMind/Tensor.h"
+#include "IronMind/Initializer.h"
 #include "IronMind/types.h"
 
 int main()
@@ -74,6 +75,10 @@ int main()
 
     // a = Tensor::Load(".tst_tensor");
     // a.Print();
+
+    Tensor a({2, 2, 3});
+    Initializer::Normal().Init(a);
+    a.Print();
 
     return 0;
 }
