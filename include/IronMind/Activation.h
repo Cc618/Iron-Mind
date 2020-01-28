@@ -11,12 +11,15 @@ namespace im
     {
     public:
         // Static constructors
-        static Activation linear();
-        static Activation relu();
-        static Activation sigmoid();
+        static Activation Linear();
+        static Activation Relu();
+        static Activation Sigmoid();
 
     public:
         Activation(void (*function)(value_t &val), void (*derivative)(value_t &val));
+
+    public:
+        virtual void InitOptimization(History &inputs, History &gradients) const override;
 
     public:
         // Computes y = f(x) with f this layer

@@ -52,6 +52,7 @@ int main()
 
 
 
+    // // Tensor test 
     // Tensor a = Tensor({
     //     1, 2,
     //     3, 4,
@@ -78,37 +79,39 @@ int main()
     // a.Print();
 
 
+    // // Initializer test
     // Tensor a({2, 2, 3});
     // Initializer::Normal().Init(a);
     // a.Print();
 
 
-    History h;
+    // History test
+    // History h;
 
-    h.Push(Tensor({1}, {1}));
-    h.Push(Tensor({2}, {1}));
-    h.Push(Tensor({3}, {1}));
-    h.Push(Tensor({4}, {1}));
+    // h.Push(Tensor({1}, {1}));
+    // h.Push(Tensor({2}, {1}));
+    // h.Push(Tensor({3}, {1}));
+    // h.Push(Tensor({4}, {1}));
 
-    h.Next().Print();
-    h.Next().Print();
-    h.Next().Print();
-    h.Next().Print();
+    // h.Next().Print();
+    // h.Next().Print();
+    // h.Next().Print();
+    // h.Next().Print();
 
-    h.SetForward(false);
+    // h.SetForward(false);
 
-    h.Next().Print();
-    h.Next().Print();
-    h.Next().Print();
-    h.Next().Print();
+    // h.Next().Print();
+    // h.Next().Print();
+    // h.Next().Print();
+    // h.Next().Print();
 
-    h.SetForward(false);
-    h.Reset();
+    // h.SetForward(false);
+    // h.Reset();
 
-    h.Next().Print();
-    h.Next().Print();
-    h.Next().Print();
-    h.Next().Print();
+    // h.Next().Print();
+    // h.Next().Print();
+    // h.Next().Print();
+    // h.Next().Print();
 
 
     return 0;

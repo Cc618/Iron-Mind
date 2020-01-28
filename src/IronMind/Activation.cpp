@@ -3,12 +3,12 @@
 
 namespace im
 {
-    Activation Activation::linear()
+    Activation Activation::Linear()
     {
         return Activation([](value_t &val){}, [](value_t &val){ val = 1; });
     }
 
-    Activation Activation::relu()
+    Activation Activation::Relu()
     {
         return Activation(
             [](value_t &val){
@@ -24,7 +24,7 @@ namespace im
         );
     }
 
-    Activation Activation::sigmoid()
+    Activation Activation::Sigmoid()
     {
         return Activation(
             [](value_t &x){
@@ -40,6 +40,12 @@ namespace im
     Activation::Activation(void (*function)(float &val), void (*derivative)(float &val))
         : function(function), derivative(derivative)
     {}
+
+    void Activation::InitOptimization(History &inputs, History &gradients) const
+    {
+        inputs.Push(Tensor(inputShape));
+        gradients.Push(Tensor(outputShape));
+    }
 
     Tensor Activation::operator()(const Tensor &x) const
     {

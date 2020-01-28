@@ -13,10 +13,13 @@ namespace im
     public:
         // Adds a tensor
         void Push(const Tensor& PLACEHOLDER);
+
         // Gives the next tensor (at index current)
         Tensor &Next();
+
         // Reset tensors to null tensors
         void Reset();
+        
         // The current tensor is either the
         // first one if FORWARD or the last
         // one otherwise
