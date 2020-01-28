@@ -3,6 +3,7 @@
 
 #include "IronMind/Tensor.h"
 #include "IronMind/Initializer.h"
+#include "IronMind/History.h"
 #include "IronMind/types.h"
 
 int main()
@@ -76,9 +77,39 @@ int main()
     // a = Tensor::Load(".tst_tensor");
     // a.Print();
 
-    Tensor a({2, 2, 3});
-    Initializer::Normal().Init(a);
-    a.Print();
+
+    // Tensor a({2, 2, 3});
+    // Initializer::Normal().Init(a);
+    // a.Print();
+
+
+    History h;
+
+    h.Push(Tensor({1}, {1}));
+    h.Push(Tensor({2}, {1}));
+    h.Push(Tensor({3}, {1}));
+    h.Push(Tensor({4}, {1}));
+
+    h.Next().Print();
+    h.Next().Print();
+    h.Next().Print();
+    h.Next().Print();
+
+    h.SetForward(false);
+
+    h.Next().Print();
+    h.Next().Print();
+    h.Next().Print();
+    h.Next().Print();
+
+    h.SetForward(false);
+    h.Reset();
+
+    h.Next().Print();
+    h.Next().Print();
+    h.Next().Print();
+    h.Next().Print();
+
 
     return 0;
 }

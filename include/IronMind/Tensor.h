@@ -61,6 +61,12 @@ namespace im
         // Adds 1 to the shape DIMS times
         Tensor &ExpandDims(const size_t DIMS=1);
 
+        // Set values to zero
+        Tensor &Zero();
+
+        // Set values to VALUE
+        Tensor &Set(const value_t VAL);
+
     public:
         // Access to an item
         value_t operator[](const shape_t& INDICES) const;

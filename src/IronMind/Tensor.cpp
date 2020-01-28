@@ -236,6 +236,22 @@ namespace im
         return *this;
     }
 
+    Tensor &Tensor::Zero()
+    {
+        for (size_t i = 0; i < size; ++i)
+            data[i] = 0;
+
+        return *this;
+    }
+
+    Tensor &Tensor::Set(const value_t VAL)
+    {
+        for (size_t i = 0; i < size; ++i)
+            data[i] = VAL;
+
+        return *this;
+    }
+
     value_t Tensor::operator[](const shape_t& INDICES) const
     {
         return data[posAt(INDICES)];
