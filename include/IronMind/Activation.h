@@ -21,6 +21,12 @@ namespace im
     public:
         virtual void InitOptimization(History &inputs, History &gradients) const override;
 
+        virtual void ComputeGradients(const Tensor &INPUT, const Tensor &PREV_PROPAGATION_GRADIENT, History &gradients) const override
+        {}
+        
+        virtual Tensor ComputePropagationGradient(const Tensor &INPUT, const Tensor &PREV_PROPAGATION_GRADIENT) const override
+        {}
+
     public:
         // Computes y = f(x) with f this layer
         virtual Tensor operator()(const Tensor &x) const override;

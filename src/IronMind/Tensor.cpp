@@ -45,15 +45,18 @@ namespace im
         initShape({});
     }
 
-    Tensor::Tensor(const shape_t& SHAPE)
+    Tensor Tensor::Values(const shape_t& SHAPE, const value_t VAL)
     {
-        initShape(SHAPE);
+        Tensor t;
+        t.initShape(SHAPE);
 
         // Allocate and copy the data from the list to the tensor
-        data = new float[size];
+        t.data = new float[t.size];
         
-        for (size_t i = 0; i < size; ++i)
-            data[i] = 0;
+        for (size_t i = 0; i < t.size; ++i)
+            t.data[i] = VAL;
+        
+        return t;
     }
 
     Tensor::Tensor(const value_list_t& DATA, const shape_t& SHAPE)
@@ -189,14 +192,16 @@ namespace im
         WriteFile(PATH, ToBytes());
     }
 
-    Tensor Tensor::WeightedSum(const Tensor &WEIGHTS) const
+    Tensor Tensor::WeightedSum(const Tensor &WEIGHTS, const bool TRANSPOSE) const
     {
         Assert(shape.size() == 1, "(Tensor::WeightedSum) The first tensor must have one dimension");
         Assert(WEIGHTS.shape.size() == 2, "(Tensor::WeightedSum) The second tensor must have two dimensions");
-        Assert(WEIGHTS.shape[0] == shape[0], "(Tensor::WeightedSum) The second tensor must have a shape "
+        
+        const size_t RESULT_SIZE = TRANSPOSE ? WEIGHTS.shape[0] : WEIGHTS.shape[1];
+
+        Assert(RESULT_SIZE == shape[0], "(Tensor::WeightedSum) The second tensor must have a shape "
             "like { n, m } and the first { n } but first.n != second.n");
 
-        const size_t RESULT_SIZE = WEIGHTS.shape[1];
         Tensor result(new float[RESULT_SIZE], { RESULT_SIZE }, RESULT_SIZE);
        
         for (size_t i = 0; i < RESULT_SIZE; ++i)
@@ -206,10 +211,28 @@ namespace im
             
             // Compute the weighted sum
             for (size_t j = 0; j < size; ++j)
-                result.data[i] += data[j] * WEIGHTS.data[j * RESULT_SIZE + i];
+                result.data[i] += data[j] * WEIGHTS.data[
+                    TRANSPOSE ? i * RESULT_SIZE + j : j * RESULT_SIZE + i
+                ];
         }
 
         return result;
+    }
+
+    Tensor Tensor::Outer(const Tensor &OTHER) const
+    {
+        Assert(shape.size() == 1, "(Tensor::Outer) The tensor must be one dimensional");
+        Assert(OTHER.shape.size() == 1, "(Tensor::Outer) The tensor must be one dimensional");
+
+        const size_t n = size;
+        const size_t m = OTHER.size;
+        value_t *resultData = new value_t[n * m];
+
+        for (size_t i = 0; i < n; ++i)
+            for (size_t j = 0; j < m; ++j)
+                resultData[i * m + j] = data[i] * OTHER.data[j];
+
+        return Tensor(resultData, { n, m }, n * m);
     }
     
     Tensor &Tensor::Map(void (*f)(float &val))

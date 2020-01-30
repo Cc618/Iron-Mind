@@ -78,6 +78,8 @@ int main()
     // a = Tensor::Load(".tst_tensor");
     // a.Print();
 
+    // Tensor({1 , 2}, { 2 }).Outer(Tensor({ 3, 4 }, { 2 })).Print();
+
 
     // // Initializer test
     // Tensor a({2, 2, 3});
@@ -112,6 +114,7 @@ int main()
     // h.Next().Print();
     // h.Next().Print();
     // h.Next().Print();
+
 
 
     return 0;

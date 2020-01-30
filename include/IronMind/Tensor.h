@@ -17,13 +17,15 @@ namespace im
         friend void Initializer::Init(Tensor&);
 
     public:
-        // Load using buffer or file
+        // Loads a tensor using buffer or file
         static Tensor Load(const std::vector<uint8_t>& BUFFER);
         static Tensor Load(const std::string& PATH);
 
+        // Creates tensor plenty of values
+        static Tensor Values(const shape_t& SHAPE, const value_t VAL=0.f);
+
     public:
         Tensor();
-        Tensor(const shape_t& SHAPE);
         Tensor(const value_list_t& DATA, const shape_t& SHAPE);
         Tensor(const Tensor& OTHER);
         ~Tensor();
@@ -50,10 +52,16 @@ namespace im
 
         // Computes the weigthed sum
         // Optimized version of vector dot weights
+        // If TRANSPOSE, WEIGHTS will be transposed
         // * This tensor must have one dimension (a shape like { n })
         // * The second tensor must have two dimensions (a shape like { n, m })
         // * The result will have a shape like { m }
-        Tensor WeightedSum(const Tensor &WEIGHTS) const;
+        Tensor WeightedSum(const Tensor &WEIGHTS, const bool TRANSPOSE=false) const;
+
+        // Computes the outer product of two vectors (one dimensional tensors)
+        // * They must have shapes { n } and { m }
+        // * The result has the shape { n, m }
+        Tensor Outer(const Tensor &OTHER) const;
 
         // Applies the function f on each values
         Tensor &Map(void (*f)(float &val));

@@ -21,6 +21,13 @@ namespace im
     public:
         // Adds the tensors for the optimizer
         virtual void InitOptimization(History &inputs, History &gradients) const = 0;
+        // Computes all partial derivatives of
+        // the loss wrt each weight of the layer
+        virtual void ComputeGradients(const Tensor &INPUT, const Tensor &PREV_PROPAGATION_GRADIENT, History &gradients) const {}
+        // Returns the partial derivatives of
+        // the loss wrt to the outputs of
+        // this layer
+        virtual Tensor ComputePropagationGradient(const Tensor &INPUT, const Tensor &PREV_PROPAGATION_GRADIENT) const = 0;
 
     public:
         // Computes y = f(x) with f this layer

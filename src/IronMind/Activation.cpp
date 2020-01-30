@@ -43,8 +43,7 @@ namespace im
 
     void Activation::InitOptimization(History &inputs, History &gradients) const
     {
-        inputs.Push(Tensor(inputShape));
-        gradients.Push(Tensor(outputShape));
+        inputs.Push(Tensor::Values(inputShape));
     }
 
     Tensor Activation::operator()(const Tensor &x) const
